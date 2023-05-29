@@ -9,5 +9,8 @@ public class GramSymbol {
 
         public String getElem() {
             return this._elem;
+
         }
+
+
 }
