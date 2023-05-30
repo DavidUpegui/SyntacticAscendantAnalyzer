@@ -236,7 +236,7 @@ public class SyntacticSLR {
         }
     }  // Fin de GeneraCambios() --------------------------------------------------------------------
 
-    public int Analyze(Lexicon oAnalex) {
+    public int analyze(Lexicon oAnalex) {
         int ae = 0;
         oAnalex.add("$", "$");
         stack.stack.add(new GramSymbol("0"));
@@ -265,7 +265,7 @@ public class SyntacticSLR {
         }
     }  // Fin de Analiza() ----------------------------------------------------------------------------------
 
-    public String Accion(String s, String a) // ------------------------------------------------------------
+    public String action(String s, String a) // ------------------------------------------------------------
     {
         //metodo que determina que accion se realizara
         int tipo = -1, no = -1;
@@ -278,10 +278,10 @@ public class SyntacticSLR {
                 break;
             }
         }
-        for (int i = 0; i < _noActions; i++) {
-            if (_action[i][0] == edo && _action[i][1] == inda) {
-                tipo = _action[i][2];
-                no = _action[i][3];
+        for (int i = 0; i < action.size(); i++) {
+            if (action.get(i).getInitialState() == edo && action.get(i).getEntryIndex() == inda) {
+                tipo = action.get(i).getActionType();
+                no = action.get(i).getNextState();
                 enc = true;
             }
         }
