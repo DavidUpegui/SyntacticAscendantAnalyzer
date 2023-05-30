@@ -8,7 +8,7 @@ public class Item {
     // Metodos ----------------------------------------------------------
     public Item(int[][] arre, int len) {
         _noItems = len;
-        _item = new int[SintAscSLR.NOPROD + 1][2];
+        _item = new int[12 + 1][2];
         for (int i = 0; i < len; i++) {
             for (int j = 0; j < 2; j++) {
                 _item[i][j] = arre[i][j];
@@ -17,7 +17,7 @@ public class Item {
     }
 
     public Item() {
-        _item = new int[SintAscSLR.NOPROD + 1][2];
+        _item = new int[12 + 1][2];
         _noItems = 0;
     }
 
