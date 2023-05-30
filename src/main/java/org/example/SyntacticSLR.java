@@ -29,7 +29,7 @@ public class SyntacticSLR {
     };
 
 
-    ArrayList<GramSymbol> stack = new Stack().stack;
+    Stack stack = new Stack();
     ArrayList<Action> action;
     ArrayList<GoTo> gotos;
     ArrayList<Integer> dd;
@@ -41,7 +41,7 @@ public class SyntacticSLR {
 
     public void Inicia() //---------------------------------------------
     {
-        stack.clear();
+        stack.stack.clear();
         dd.clear();
         action.clear();
         gotos.clear();
@@ -230,24 +230,26 @@ public class SyntacticSLR {
         }
     }  // Fin de GeneraCambios() --------------------------------------------------------------------
 
-    public int Analiza(Lexico oAnalex) {
+    public int Analyze(Lexicon oAnalex) {
         int ae = 0;
-        oAnalex.Anade("$", "$");
-        _pila.Push(new SimbGram("0"));
+        oAnalex.add("$", "$");
+        stack.stack.add(new GramSymbol("0"));
         while (true) {
-            String s = _pila.Tope().Elem();
+            String s = stack.top().getElem();
             String a = oAnalex.Tokens()[ae];
             String accion = Accion(s, a);
             switch (accion.charAt(0)) {
                 case 's':
-                    _pila.Push(new SimbGram(a));
-                    _pila.Push(new SimbGram(accion.substring(1)));  // caso en que la accion es un cambio
+                    stack.stack.add(new GramSymbol(a));
+                    stack.stack.add(new GramSymbol(accion.substring(1)));  // caso en que la accion es un cambio
                     ae++;
                     break;
                 case 'r':
                     SacarDosBeta(accion);//sacar dos veces Beta simbolos de la pila
                     MeterAGoTo(accion);  //meter Vns y goTos a la pila
-                    _dd[_noDds++] = Integer.parseInt(accion.substring(1));  // caso en que la accion es una
+                    dd.add(Integer.parseInt(accion.substring(1)));
+
+                    //_dd[_noDds++] = Integer.parseInt(accion.substring(1));  // caso en que la accion es una
                     break;                                               // reduccion
                 case 'a':
                     return 0;  // aceptacion
