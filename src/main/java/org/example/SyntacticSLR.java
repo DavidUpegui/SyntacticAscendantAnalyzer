@@ -19,6 +19,7 @@ public class SyntacticSLR {
     };
 
 
+
     int[][] _sig = {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // Renglon que no se usa
             {1, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // SIG(B)={ $  }
             {2, 1, 11, 0, 0, 0, 0, 0, 0, 0, 0}, // SIG(A)={ id $  }
@@ -122,7 +123,7 @@ public class SyntacticSLR {
 //                    _goTo[_noGoTos][0] = i;    Este se define dentro del IF
 //                    _goTo[_noGoTos][1] = indSimGoTo;
                     oNuevoItem = lock(oNuevoItem);
-                    if (!EstaNuevoItem(oNuevoItem, edoYaExiste))//verifica si el item no existe
+                    if (!isNewItem(oNuevoItem, edoYaExiste))//verifica si el item no existe
                     {
                         gotos.add(new GoTo(i , indSimGoTo, canonicColection.size()));
 //                        _goTo[_noGoTos++][2] = _noItems;
@@ -154,21 +155,21 @@ public class SyntacticSLR {
         return noItemsAgregado;
     }  // Fin de AgregarItems() -------------------------------------------------------------------------
 
-    public boolean EstaNuevoItem(Item oNuevoItem, int[] edoYaExiste) //-----------------------------------
+    public boolean isNewItem(Item oNuevoItem, int[] edoYaExiste) //-----------------------------------
     {
         edoYaExiste[0] = -1;
-        for (int i = 0; i < _noItems; i++) {
-            if (_c[i].NoItems() == oNuevoItem.NoItems()) {
+        for (int i = 0; i < canonicColection.size(); i++) {
+            if (canonicColection.get(i).NoItems() == oNuevoItem.NoItems()) {
                 int aciertos = 0;
-                for (int j = 0; j < _c[i].NoItems(); j++) {
+                for (int j = 0; j < canonicColection.get(i).NoItems(); j++) {
                     for (int k = 0; k < oNuevoItem.NoItems(); k++) {
-                        if (_c[i].NoProd(j) == oNuevoItem.NoProd(k) && _c[i].PosPto(j) == oNuevoItem.PosPto(k)) {
+                        if (canonicColection.get(i).NoProd(j) == oNuevoItem.NoProd(k) && canonicColection.get(i).PosPto(j) == oNuevoItem.PosPto(k)) {
                             aciertos++;
                             break;
                         }
                     }
                 }
-                if (aciertos == _c[i].NoItems()) //si numero de items son iguales a los aciertos, entonces ya existe
+                if (aciertos == canonicColection.get(i).NoItems()) //si numero de items son iguales a los aciertos, entonces ya existe
                 {
                     edoYaExiste[0] = i;
                     return true;
