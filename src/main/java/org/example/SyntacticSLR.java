@@ -3,6 +3,9 @@ package org.example;
 import java.util.ArrayList;
 
 public class SyntacticSLR {
+
+    String[] _vts = {"", "id", "=", ";", "+", "-", "*", "/", "num", "(", ")", "$"};
+    String[] _vns = {"", "B", "A", "E", "T", "F"};
     Production[] productions = {
             new Production(1, 1, new int[]{2}),
             new Production(2, 5, new int[]{2, -1, -2, 3, -3}),
@@ -182,22 +185,25 @@ public class SyntacticSLR {
 
     public void GeneraReducciones(int i) // reducciones del Item _c[i] ----------------------------
     {
-        for (int j = 0; j < _c[i].NoItems(); j++) {
-            int noProd = _c[i].NoProd(j);
-            int posPto = _c[i].PosPto(j);
+        for (int j = 0; j < canonicColection.get(i).NoItems(); j++) {
+            int noProd = canonicColection.get(i).NoProd(j);
+            int posPto = canonicColection.get(i).PosPto(j);
             if (i == 1) //cuando el item es 1 se realiza lo siguiente
             {
-                _action[_noActions][0] = i;
-                _action[_noActions][1] = _vts.length - 1;
-                _action[_noActions][2] = 2;
-                _action[_noActions++][3] = -1;
-            } else if (noProd != -1 && posPto == _prod[noProd][1]) {
-                int indVns = _prod[noProd][0];
+                action.add(new Action(i, _vts.length - 1, 2, -1));
+//                _action[_noActions][0] = i;
+//                _action[_noActions][1] = _vts.length - 1;
+//                _action[_noActions][2] = 2;
+//                _action[_noActions++][3] = -1;
+            } else if (noProd != -1 && posPto == productions[noProd].getnTokens()) {
+                int indVns = productions[noProd].getProducerIndex();
                 for (int k = 1; k <= _sig[indVns][0]; k++) {
-                    _action[_noActions][0] = i;
-                    _action[_noActions][1] = _sig[indVns][k];
-                    _action[_noActions][2] = 1;
-                    _action[_noActions++][3] = noProd;
+                    action.add(new Action(i, _sig[indVns][k] , 1 , noProd));
+
+//                    _action[_noActions][0] = i;
+//                    _action[_noActions][1] = _sig[indVns][k];
+//                    _action[_noActions][2] = 1;
+//                    _action[_noActions++][3] = noProd;
                 }
             }
         }
