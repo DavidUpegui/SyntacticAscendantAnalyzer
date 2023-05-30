@@ -79,7 +79,7 @@ public class SyntacticSLR {
         boolean cambios = true;
         while (cambios) {
             for (int i = 0; i < oItem.NoItems(); i++) {
-                int noItemsAgregado = AgregarItems(i, oItem);
+                int noItemsAgregado = addItems(i, oItem);
                 if (noItemsAgregado > 0) {
                     cambios = true;
                     break;
@@ -137,15 +137,15 @@ public class SyntacticSLR {
         }
     }  // Fin de AgregarConjItems()--------------------------------------------------------------------
 
-    public int AgregarItems(int i, Item oItem) //--------------------------------------------------
+    public int addItems(int i, Item oItem) //--------------------------------------------------
     {
         int noItemsAgregado = 0;
         int posPto = oItem.PosPto(i);
         int noProd = oItem.NoProd(i);
-        int indVns = noProd == -1 ? 1 : (posPto == _prod[noProd][1] ? 0 : (_prod[noProd][posPto + 2] < 0 ? 0 : _prod[noProd][posPto + 2]));
+        int indVns = noProd == -1 ? 1 : (posPto == productions[noProd].getnTokens() ? 0 : (productions[noProd].getTokens()[posPto] < 0 ? 0 : productions[noProd].getTokens()[posPto]));
         if (indVns > 0) {
-            for (int j = 0; j < NOPROD; j++) {
-                if (indVns == _prod[j][0] && !oItem.ExisteItem(j, 0)) //busca si existe una produccion con
+            for (int j = 0; j < productions.length; j++) {
+                if (indVns == productions[j].getProducerIndex() && !oItem.ExisteItem(j, 0)) //busca si existe una produccion con
                 {                                                    //ese indice y que no exista el item
                     oItem.Agregar(j, 0);
                     noItemsAgregado++;
