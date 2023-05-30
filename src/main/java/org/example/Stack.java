@@ -2,20 +2,20 @@ package org.example;
 
 import java.util.ArrayList;
 
-public class Pila {
+public class Stack {
     ArrayList<GramSymbol> stack;
 
-    public Pila(ArrayList<GramSymbol> stack) {
+    public Stack(){
         this.stack = stack;
     }
 
-    public boolean Empty() {return this.stack.isEmpty();}
+    public boolean empty() {return this.stack.isEmpty();}
 
     public void push(GramSymbol element) {this.stack.add(element);}
 
     public GramSymbol pop() {
 
-            if (!this.Empty()) {
+            if (!this.empty()) {
                 int lastIndex = stack.size() - 1;
                 GramSymbol poppedValue = stack.get(lastIndex);
                 stack.remove(lastIndex);
