@@ -3,7 +3,6 @@ package org.example;
 import java.util.ArrayList;
 
 public class SyntacticSLR {
-
     String[] _vts = {"", "id", "=", ";", "+", "-", "*", "/", "num", "(", ")", "$"};
     String[] _vns = {"", "B", "A", "E", "T", "F"};
     Production[] productions = {
@@ -33,10 +32,10 @@ public class SyntacticSLR {
 
 
     Stack stack = new Stack();
-    ArrayList<Action> action;
-    ArrayList<GoTo> gotos;
-    ArrayList<Integer> dd;
-    ArrayList<Item> canonicColection;
+    ArrayList<Action> action = new ArrayList<Action>();
+    ArrayList<GoTo> gotos = new ArrayList<GoTo>();
+    ArrayList<Integer> dd = new ArrayList<Integer>();
+    ArrayList<Item> canonicColection = new ArrayList<Item>();
 
 
     public SyntacticSLR() {
@@ -44,10 +43,13 @@ public class SyntacticSLR {
 
     public void Inicia() //---------------------------------------------
     {
-        stack.stack.clear();
+        stack.clear();
         dd.clear();
         action.clear();
         gotos.clear();
+        canonicColection.clear();
+
+
         //crea item 0 y calcula la cerradura del mismo---------------
         int[][] arre = {{-1, 0}};
         canonicColection.add(lock(new Item(arre, 1)));
@@ -70,7 +72,7 @@ public class SyntacticSLR {
 //        _goTo[_noGoTos++][2] = 1;
 
         //genera cambios y reducciones de la tabla M----------------------
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < canonicColection.size(); i++) {
             generateChanges(i);
             GeneraReducciones(i);
         }

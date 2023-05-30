@@ -6,13 +6,15 @@ public class Stack {
     ArrayList<GramSymbol> stack;
 
     public Stack(){
-        this.stack = stack;
+        this.stack = new ArrayList<GramSymbol>();
     }
 
     public boolean empty() {return this.stack.isEmpty();}
 
     public void push(GramSymbol element) {this.stack.add(element);}
-
+    public void clear(){
+        this.stack.clear();
+    }
     public GramSymbol pop() {
 
             if (!this.empty()) {
