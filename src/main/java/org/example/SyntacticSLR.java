@@ -243,7 +243,7 @@ public class SyntacticSLR {
         while (true) {
             String s = stack.top().getElem();
             String a = oAnalex.Tokens()[ae];
-            String accion = Accion(s, a);
+            String accion = action(s, a);
             switch (accion.charAt(0)) {
                 case 's':
                     stack.stack.add(new GramSymbol(a));
