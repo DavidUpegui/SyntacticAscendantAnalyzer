@@ -251,8 +251,8 @@ public class SyntacticSLR {
                     ae++;
                     break;
                 case 'r':
-                    SacarDosBeta(accion);//sacar dos veces Beta simbolos de la pila
-                    MeterAGoTo(accion);  //meter Vns y goTos a la pila
+                    takeOutTwoBeta(accion);//sacar dos veces Beta simbolos de la pila
+                    addToGoTo(accion);  //meter Vns y goTos a la pila
                     dd.add(Integer.parseInt(accion.substring(1)));
 
                     //_dd[_noDds++] = Integer.parseInt(accion.substring(1));  // caso en que la accion es una
@@ -302,23 +302,23 @@ public class SyntacticSLR {
 
     }  // Fin de Accion() ------------------------------------------------------------------
 
-    public void SacarDosBeta(String accion) //--------------------------------------------
+    public void takeOutTwoBeta(String accion) //--------------------------------------------
     {
         int noProd = Integer.parseInt(accion.substring(1));
-        int noVeces = _prod[noProd][1] * 2;
+        int noVeces = productions[noProd].getnTokens() * 2;
         for (int i = 1; i <= noVeces; i++) {
-            _pila.Pop();
+            stack.pop();
         }
     }  // Fin de SacarDosBeta() ------------------------------------------------------------
 
-    public void MeterAGoTo(String accion) //-----------------------------------------------
+    public void addToGoTo(String accion) //-----------------------------------------------
     {
-        int sPrima = Integer.parseInt(_pila.Tope().Elem());
+        int sPrima = Integer.parseInt(stack.top().getElem());
         int noProd = Integer.parseInt(accion.substring(1));
-        _pila.Push(new SimbGram(_vns[_prod[noProd][0]]));
-        for (int i = 0; i < _noGoTos; i++) {
-            if (sPrima == _goTo[i][0] && _prod[noProd][0] == _goTo[i][1]) {
-                _pila.Push(new SimbGram(Integer.toString(_goTo[i][2])));
+        stack.push(new GramSymbol(_vns[productions[noProd].getProducerIndex()]));
+        for (int i = 0; i < gotos.size(); i++) {
+            if (sPrima == gotos.get(i).getInitialState() && productions[noProd].getProducerIndex() == gotos.get(i).getEntryIndex()) {
+                stack.push(new GramSymbol(Integer.toString(gotos.get(i).getNextState())));
                 break;
             }
         }
