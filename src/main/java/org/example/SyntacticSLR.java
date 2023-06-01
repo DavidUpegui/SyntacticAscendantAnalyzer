@@ -41,7 +41,7 @@ public class SyntacticSLR {
     public SyntacticSLR() {
     }
 
-    public void Inicia() //---------------------------------------------
+    public void start() //---------------------------------------------
     {
         stack.clear();
         dd.clear();
@@ -74,22 +74,22 @@ public class SyntacticSLR {
         //genera cambios y reducciones de la tabla M----------------------
         for (int i = 0; i < canonicColection.size(); i++) {
             generateChanges(i);
-            GeneraReducciones(i);
+            generateReductions(i);
         }
 
     }  // fin de Inicia() -------------------------------------------------------------------
 
     public Item lock(Item oItem) // Cerradura de un item-------------------------------------
     {
-        boolean cambios = true;
-        while (cambios) {
+        boolean changes = true;
+        while (changes) {
             for (int i = 0; i < oItem.numItems(); i++) {
-                int noItemsAgregado = addItems(i, oItem);
-                if (noItemsAgregado > 0) {
-                    cambios = true;
+                int numItemsAdded = addItems(i, oItem);
+                if (numItemsAdded > 0) {
+                    changes = true;
                     break;
                 } else {
-                    cambios = false;
+                    changes = false;
                 }
             }
         }
@@ -98,44 +98,44 @@ public class SyntacticSLR {
 
     public void addConjItems(int i) //-------------------------------------------------------
     {
-        boolean[] marcaItems = new boolean[productions.length + 1];
+        boolean[] itemsMark = new boolean[productions.length + 1];
         for (int j = 0; j < productions.length + 1; j++) {
-            marcaItems[j] = false;
+            itemsMark[j] = false;
         }
-        marcaItems[0] = i == 0;
+        itemsMark[0] = i == 0;
         for (int j = 0; j < canonicColection.get(i).numItems(); j++) {
-            if (!marcaItems[j]) {
-                int noProd = canonicColection.get(i).numProd(j);
+            if (!itemsMark[j]) {
+                int numProd = canonicColection.get(i).numProd(j);
                 int posPto = canonicColection.get(i).posPto(j);
-                if (posPto != productions[noProd].getnTokens()) {
-                    Item oNuevoItem = new Item();
-                    int indSimGoTo = productions[noProd].getTokens()[posPto];
+                if (posPto != productions[numProd].getnTokens()) {
+                    Item newItem = new Item();
+                    int indSimGoTo = productions[numProd].getTokens()[posPto];
                     for (int k = 0; k < canonicColection.get(i).numItems(); k++) {
-                        if (!marcaItems[k]) {
+                        if (!itemsMark[k]) {
                             int nP = canonicColection.get(i).numProd(k);
                             int pP = canonicColection.get(i).posPto(k);
                             try {
                                 if (indSimGoTo == productions[nP].getTokens()[pP]) {
-                                    oNuevoItem.add(nP, pP + 1);
-                                    marcaItems[k] = true;
+                                    newItem.add(nP, pP + 1);
+                                    itemsMark[k] = true;
                                 }
                             } catch (Exception e) {
                                 continue;
                             }
                         }
                     }
-                    int[] edoYaExiste = {-1};
+                    int[] edoExist = {-1};
 //                    _goTo[_noGoTos][0] = i;    Este se define dentro del IF
 //                    _goTo[_noGoTos][1] = indSimGoTo;
-                    oNuevoItem = lock(oNuevoItem);
-                    if (!isNewItem(oNuevoItem, edoYaExiste))//verifica si el item no existe
+                    newItem = lock(newItem);
+                    if (!isNewItem(newItem, edoExist))//verifica si el item no existe
                     {
                         gotos.add(new GoTo(i , indSimGoTo, canonicColection.size()));
 //                        _goTo[_noGoTos++][2] = _noItems;
-                        canonicColection.add(oNuevoItem);
+                        canonicColection.add(newItem);
                     } else {
-                        gotos.add(new GoTo(i , indSimGoTo, edoYaExiste[0]));
-//                        _goTo[_noGoTos++][2] = edoYaExiste[0];//calcular el goTo cuando el item no existe
+                        gotos.add(new GoTo(i , indSimGoTo, edoExist[0]));
+//                        _goTo[_noGoTos++][2] = edoExist[0];//calcular el goTo cuando el item no existe
                     }
                 }
             }
@@ -144,7 +144,7 @@ public class SyntacticSLR {
 
     public int addItems(int i, Item oItem) //--------------------------------------------------
     {
-        int noItemsAgregado = 0;
+        int numItemsAdded = 0;
         int posPto = oItem.posPto(i);
         int noProd = oItem.numProd(i);
         int indVns = noProd == -1 ? 1 : (posPto == productions[noProd].getnTokens() ? 0 : (productions[noProd].getTokens()[posPto] < 0 ? 0 : productions[noProd].getTokens()[posPto]));
@@ -153,30 +153,30 @@ public class SyntacticSLR {
                 if (indVns == productions[j].getProducerIndex() && !oItem.itemExist(j, 0)) //busca si existe una produccion con
                 {                                                    //ese indice y que no exista el item
                     oItem.add(j, 0);
-                    noItemsAgregado++;
+                    numItemsAdded++;
                 }
             }
         }
-        return noItemsAgregado;
+        return numItemsAdded;
     }  // Fin de AgregarItems() -------------------------------------------------------------------------
 
-    public boolean isNewItem(Item oNuevoItem, int[] edoYaExiste) //-----------------------------------
+    public boolean isNewItem(Item oNewItem, int[] edoExist) //-----------------------------------
     {
-        edoYaExiste[0] = -1;
+        edoExist[0] = -1;
         for (int i = 0; i < canonicColection.size(); i++) {
-            if (canonicColection.get(i).numItems() == oNuevoItem.numItems()) {
-                int aciertos = 0;
+            if (canonicColection.get(i).numItems() == oNewItem.numItems()) {
+                int succes = 0;
                 for (int j = 0; j < canonicColection.get(i).numItems(); j++) {
-                    for (int k = 0; k < oNuevoItem.numItems(); k++) {
-                        if (canonicColection.get(i).numProd(j) == oNuevoItem.numProd(k) && canonicColection.get(i).posPto(j) == oNuevoItem.posPto(k)) {
-                            aciertos++;
+                    for (int k = 0; k < oNewItem.numItems(); k++) {
+                        if (canonicColection.get(i).numProd(j) == oNewItem.numProd(k) && canonicColection.get(i).posPto(j) == oNewItem.posPto(k)) {
+                            succes++;
                             break;
                         }
                     }
                 }
-                if (aciertos == canonicColection.get(i).numItems()) //si numero de items son iguales a los aciertos, entonces ya existe
+                if (succes == canonicColection.get(i).numItems()) //si numero de items son iguales a los succes, entonces ya existe
                 {
-                    edoYaExiste[0] = i;
+                    edoExist[0] = i;
                     return true;
                 }
 
@@ -185,10 +185,10 @@ public class SyntacticSLR {
         return false;
     }  // Fin de EstaNuevoItem()  ------------------------------------------------------------------
 
-    public void GeneraReducciones(int i) // reducciones del Item _c[i] ----------------------------
+    public void generateReductions(int i) // reducciones del Item _c[i] ----------------------------
     {
         for (int j = 0; j < canonicColection.get(i).numItems(); j++) {
-            int noProd = canonicColection.get(i).numProd(j);
+            int numProd = canonicColection.get(i).numProd(j);
             int posPto = canonicColection.get(i).posPto(j);
             if (i == 1) //cuando el item es 1 se realiza lo siguiente
             {
@@ -197,15 +197,15 @@ public class SyntacticSLR {
 //                _action[_noActions][1] = _vts.length - 1;
 //                _action[_noActions][2] = 2;
 //                _action[_noActions++][3] = -1;
-            } else if (noProd != -1 && posPto == productions[noProd].getnTokens()) {
-                int indVns = productions[noProd].getProducerIndex();
+            } else if (numProd != -1 && posPto == productions[numProd].getnTokens()) {
+                int indVns = productions[numProd].getProducerIndex();
                 for (int k = 1; k <= _sig[indVns][0]; k++) {
-                    action.add(new Action(i, _sig[indVns][k] , 1 , noProd));
+                    action.add(new Action(i, _sig[indVns][k] , 1 , numProd));
 
 //                    _action[_noActions][0] = i;
 //                    _action[_noActions][1] = _sig[indVns][k];
 //                    _action[_noActions][2] = 1;
-//                    _action[_noActions++][3] = noProd;
+//                    _action[_noActions++][3] = numProd;
                 }
             }
         }
@@ -214,11 +214,11 @@ public class SyntacticSLR {
     public void generateChanges(int i) // cambios del Item _c[i]-------------------------
     {
         for (int j = 0; j < canonicColection.get(i).numItems(); j++) {
-            int noProd = canonicColection.get(i).numProd(j);
+            int numProd = canonicColection.get(i).numProd(j);
             int posPto = canonicColection.get(i).posPto(j);
-            if (noProd != -1) {
-                if (posPto != productions[noProd].getnTokens()) {
-                    int indSim = productions[noProd].getTokens()[posPto];
+            if (numProd != -1) {
+                if (posPto != productions[numProd].getnTokens()) {
+                    int indSim = productions[numProd].getTokens()[posPto];
                     if (indSim < 0) {
                         int edoTrans = -1;
                         for (int k = 0; k < gotos.size(); k++) {
@@ -270,7 +270,7 @@ public class SyntacticSLR {
     public String action(String s, String a) // ------------------------------------------------------------
     {
         //metodo que determina que accion se realizara
-        int tipo = -1, no = -1;
+        int type = -1, no = -1;
         int edo = Integer.parseInt(s);
         int inda = 0;
         boolean enc = false;
@@ -282,7 +282,7 @@ public class SyntacticSLR {
         }
         for (int i = 0; i < action.size(); i++) {
             if (action.get(i).getInitialState() == edo && action.get(i).getEntryIndex() == inda) {
-                tipo = action.get(i).getActionType();
+                type = action.get(i).getActionType();
                 no = action.get(i).getNextState();
                 enc = true;
             }
@@ -290,7 +290,7 @@ public class SyntacticSLR {
         if (!enc) {
             return "error";
         } else {
-            switch (tipo) {
+            switch (type) {
                 case 0:
                     return "s" + Integer.toString(no);
                 case 1:
@@ -306,17 +306,17 @@ public class SyntacticSLR {
 
     public void takeOutTwoBeta(String accion) //--------------------------------------------
     {
-        int noProd = Integer.parseInt(accion.substring(1));
-        int noVeces = productions[noProd].getnTokens() * 2;
-        for (int i = 1; i <= noVeces; i++) {
+        int numProd = Integer.parseInt(accion.substring(1));
+        int numTimes = productions[numProd].getnTokens() * 2;
+        for (int i = 1; i <= numTimes; i++) {
             stack.pop();
         }
     }  // Fin de SacarDosBeta() ------------------------------------------------------------
 
-    public void addToGoTo(String accion) //-----------------------------------------------
+    public void addToGoTo(String action ) //-----------------------------------------------
     {
         int sPrima = Integer.parseInt(stack.top().getElem());
-        int noProd = Integer.parseInt(accion.substring(1));
+        int noProd = Integer.parseInt(action.substring(1));
         stack.push(new GramSymbol(_vns[productions[noProd].getProducerIndex()]));
         for (int i = 0; i < gotos.size(); i++) {
             if (sPrima == gotos.get(i).getInitialState() && productions[noProd].getProducerIndex() == gotos.get(i).getEntryIndex()) {

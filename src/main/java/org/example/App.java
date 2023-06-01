@@ -140,7 +140,7 @@ public class App extends javax.swing.JFrame {
                 o[1] = anaLex.getLexemes()[i];
                 model.addRow(o);
             }
-            anaSynt.Inicia();
+            anaSynt.start();
             lblResul.setText(anaSynt.analyze(anaLex)==0? "Successful analysis\n ..." : "Syntax error ...");
         }
         else
