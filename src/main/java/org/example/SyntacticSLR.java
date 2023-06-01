@@ -3,8 +3,8 @@ package org.example;
 import java.util.ArrayList;
 
 public class SyntacticSLR {
-    String[] _vts = {"", "id", "=", ";", "+", "-", "*", "/", "num", "(", ")", "$"};
-    String[] _vns = {"", "B", "A", "E", "T", "F"};
+    String[] terminalVariables = {"", "id", "=", ";", "+", "-", "*", "/", "num", "(", ")", "$"};
+    String[] nonTerminalVariables = {"", "B", "A", "E", "T", "F"};
     Production[] productions = {
             new Production(1, 1, new int[]{2}),
             new Production(2, 5, new int[]{2, -1, -2, 3, -3}),
@@ -22,7 +22,7 @@ public class SyntacticSLR {
 
 
 
-    int[][] _sig = {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // Renglon que no se usa
+    int[][] followings = {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // Renglon que no se usa
             {1, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // SIG(B)={ $  }
             {2, 1, 11, 0, 0, 0, 0, 0, 0, 0, 0}, // SIG(A)={ id $  }
             {4, 3, 4, 5, 10, 0, 0, 0, 0, 0, 0}, // SIG(E)={ ; + - )  }
@@ -192,15 +192,15 @@ public class SyntacticSLR {
             int posPto = canonicColection.get(i).posPto(j);
             if (i == 1) //cuando el item es 1 se realiza lo siguiente
             {
-                action.add(new Action(i, _vts.length - 1, 2, -1));
+                action.add(new Action(i, terminalVariables.length - 1, 2, -1));
 //                _action[_noActions][0] = i;
 //                _action[_noActions][1] = _vts.length - 1;
 //                _action[_noActions][2] = 2;
 //                _action[_noActions++][3] = -1;
             } else if (numProd != -1 && posPto == productions[numProd].getnTokens()) {
                 int indVns = productions[numProd].getProducerIndex();
-                for (int k = 1; k <= _sig[indVns][0]; k++) {
-                    action.add(new Action(i, _sig[indVns][k] , 1 , numProd));
+                for (int k = 1; k <= followings[indVns][0]; k++) {
+                    action.add(new Action(i, followings[indVns][k] , 1 , numProd));
 
 //                    _action[_noActions][0] = i;
 //                    _action[_noActions][1] = _sig[indVns][k];
@@ -274,8 +274,8 @@ public class SyntacticSLR {
         int edo = Integer.parseInt(s);
         int inda = 0;
         boolean enc = false;
-        for (int i = 1; i < _vts.length; i++) {
-            if (_vts[i].equals(a)) {
+        for (int i = 1; i < terminalVariables.length; i++) {
+            if (terminalVariables[i].equals(a)) {
                 inda = i;
                 break;
             }
@@ -317,7 +317,7 @@ public class SyntacticSLR {
     {
         int sPrima = Integer.parseInt(stack.top().getElem());
         int noProd = Integer.parseInt(action.substring(1));
-        stack.push(new GramSymbol(_vns[productions[noProd].getProducerIndex()]));
+        stack.push(new GramSymbol(nonTerminalVariables[productions[noProd].getProducerIndex()]));
         for (int i = 0; i < gotos.size(); i++) {
             if (sPrima == gotos.get(i).getInitialState() && productions[noProd].getProducerIndex() == gotos.get(i).getEntryIndex()) {
                 stack.push(new GramSymbol(Integer.toString(gotos.get(i).getNextState())));
