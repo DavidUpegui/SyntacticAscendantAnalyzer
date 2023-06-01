@@ -45,15 +45,15 @@ public class App extends javax.swing.JFrame {
         lblResul = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("RECONOCEDOR ASCENDENTE SLR - PARA LA GRAMÁTICA DE ASIGNACIÓN");
+        setTitle("Ascendant Recognizer SLR - For Grammatical Assignment");
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
-        jLabel1.setText("PROGRAMA FUENTE");
+        jLabel1.setText("Write the grammatical assignment");
 
-        btnAnaSintSLR.setText("ANÁLISIS SINTÁCTICO SLR");
+        btnAnaSintSLR.setText("Analyze");
         btnAnaSintSLR.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAnaSintSLRActionPerformed(evt);
+                btnAnaSyntSLRActionPerformed(evt);
             }
         });
 
@@ -61,14 +61,14 @@ public class App extends javax.swing.JFrame {
         txaProgFuente.setRows(5);
         jScrollPane1.setViewportView(txaProgFuente);
 
-        jLabel2.setText("PAREJAS TOKENS-LEXEMAS");
+        jLabel2.setText("Tokens and Lexemes");
 
         tblTokLex.setModel(new javax.swing.table.DefaultTableModel(
                 new Object [][] {
 
                 },
                 new String [] {
-                        "TOKENS", "LEXEMAS"
+                        "Tokens", "Lexemes"
                 }
         ) {
             Class[] types = new Class [] {
@@ -89,7 +89,7 @@ public class App extends javax.swing.JFrame {
         jScrollPane2.setViewportView(tblTokLex);
 
         lblResul.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        lblResul.setText("RESULTADO");
+        lblResul.setText("Result");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -129,22 +129,22 @@ public class App extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnAnaSintSLRActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnaSintSLRActionPerformed
+    private void btnAnaSyntSLRActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnaSintSLRActionPerformed
         anaLex.Start();
         if (anaLex.Analyze(txaProgFuente.getText())) {
-            DefaultTableModel modelo = (DefaultTableModel) tblTokLex.getModel();
-            modelo.setRowCount(0);
+            DefaultTableModel model = (DefaultTableModel) tblTokLex.getModel();
+            model.setRowCount(0);
             for (int i = 0; i<anaLex.noTokens();i++) {
                 Object[] o = new Object[2];
                 o[0] = anaLex.Tokens()[i];
                 o[1] = anaLex.Lexemas()[i];
-                modelo.addRow(o);
+                model.addRow(o);
             }
             anaSynt.Inicia();
-            lblResul.setText(anaSynt.analyze(anaLex)==0? "ANÁLISIS EXITOSO ..." : "ERROR DE SINTÁXIS ...");
+            lblResul.setText(anaSynt.analyze(anaLex)==0? "Successful analysis\n ..." : "Syntax error ...");
         }
         else
-            lblResul.setText("ERROR LEXICO...");
+            lblResul.setText("Lexical error...");
 
     }//GEN-LAST:event_btnAnaSintSLRActionPerformed
 
