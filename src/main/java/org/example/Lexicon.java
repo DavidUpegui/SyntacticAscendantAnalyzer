@@ -3,43 +3,43 @@ package org.example;
 public class Lexicon {
     final int TOKREC = 9;
     final int MAXTOKENS = 500;
-    String[] _lexemas = new String[500];
-    String[] _tokens = new String[500];
-    String _lexema;
-    int _noTokens;
+    String[] lexemes = new String[500];
+    String[] tokens = new String[500];
+    String lexeme;
+    int numTokens;
     int[] _i = new int[]{0};
-    int _iniToken;
+    int initialToken;
 
     Automaton oAFD = new Automaton();
 
-    public int noTokens() {
-        return this._noTokens;
+    public int getNumTokens() {
+        return this.numTokens;
     }
 
-    public String[] Tokens() {
-        return this._tokens;
+    public String[] getTokens() {
+        return this.tokens;
     }
 
-    public String[] Lexemas() {
-        return this._lexemas;
+    public String[] getLexemes() {
+        return this.lexemes;
     }
 
     public void add(String tok, String lex) {
-        this._tokens[this._noTokens] = tok;
-        this._lexemas[this._noTokens++] = lex;
+        this.tokens[this.numTokens] = tok;
+        this.lexemes[this.numTokens++] = lex;
     }
 
     public Lexicon() {
         this._i[0] = 0;
-        this._iniToken = 0;
-        this._noTokens = 0;
+        this.initialToken = 0;
+        this.numTokens = 0;
     }
 
-    private boolean EsId() {
+    private boolean isId() {
         String[] palRes = new String[]{"if", "else", "while", "public", "break", "int", "final", "switch", "double", "for", "int", "String"};
 
         for(int i = 0; i < palRes.length; ++i) {
-            if (this._lexema.equals(palRes[i])) {
+            if (this.lexeme.equals(palRes[i])) {
                 return false;
             }
         }
@@ -47,19 +47,19 @@ public class Lexicon {
         return true;
     }
 
-    public void Start() {
+    public void start() {
         this._i[0] = 0;
-        this._iniToken = 0;
-        this._noTokens = 0;
+        this.initialToken = 0;
+        this.numTokens = 0;
     }
 
-    public boolean Analyze(String texto) {
-        for(; this._i[0] < texto.length(); this._iniToken = this._i[0]) {
+    public boolean analyze(String texto) {
+        for(; this._i[0] < texto.length(); this.initialToken = this._i[0]) {
             boolean recAuto = false;
             int noAuto = 0;
 
             while(noAuto < 9 && !recAuto) {
-                if (this.oAFD.recognize(texto, this._iniToken, this._i, noAuto)) {
+                if (this.oAFD.recognize(texto, this.initialToken, this._i, noAuto)) {
                     recAuto = true;
                 } else {
                     ++noAuto;
@@ -70,42 +70,42 @@ public class Lexicon {
                 return false;
             }
 
-            this._lexema = texto.substring(this._iniToken, this._i[0]);
+            this.lexeme = texto.substring(this.initialToken, this._i[0]);
             switch (noAuto) {
                 case 0:
                 default:
                     break;
                 case 1:
-                    if (this.EsId()) {
-                        this._tokens[this._noTokens] = "id";
+                    if (this.isId()) {
+                        this.tokens[this.numTokens] = "id";
                     } else {
-                        this._tokens[this._noTokens] = this._lexema;
+                        this.tokens[this.numTokens] = this.lexeme;
                     }
                     break;
                 case 2:
-                    this._tokens[this._noTokens] = this._lexema;
+                    this.tokens[this.numTokens] = this.lexeme;
                     break;
                 case 3:
-                    this._tokens[this._noTokens] = this._lexema;
+                    this.tokens[this.numTokens] = this.lexeme;
                     break;
                 case 4:
-                    this._tokens[this._noTokens] = "num";
+                    this.tokens[this.numTokens] = "num";
                     break;
                 case 5:
-                    this._tokens[this._noTokens] = this._lexema;
+                    this.tokens[this.numTokens] = this.lexeme;
                     break;
                 case 6:
-                    this._tokens[this._noTokens] = this._lexema;
+                    this.tokens[this.numTokens] = this.lexeme;
                     break;
                 case 7:
-                    this._tokens[this._noTokens] = "num";
+                    this.tokens[this.numTokens] = "num";
                     break;
                 case 8:
-                    this._tokens[this._noTokens] = "num";
+                    this.tokens[this.numTokens] = "num";
             }
 
             if (noAuto > 0) {
-                this._lexemas[this._noTokens++] = this._lexema;
+                this.lexemes[this.numTokens++] = this.lexeme;
             }
         }
 

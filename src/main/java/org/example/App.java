@@ -130,14 +130,14 @@ public class App extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAnaSyntSLRActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnaSintSLRActionPerformed
-        anaLex.Start();
-        if (anaLex.Analyze(txaProgFuente.getText())) {
+        anaLex.start();
+        if (anaLex.analyze(txaProgFuente.getText())) {
             DefaultTableModel model = (DefaultTableModel) tblTokLex.getModel();
             model.setRowCount(0);
-            for (int i = 0; i<anaLex.noTokens();i++) {
+            for (int i = 0; i<anaLex.getNumTokens(); i++) {
                 Object[] o = new Object[2];
-                o[0] = anaLex.Tokens()[i];
-                o[1] = anaLex.Lexemas()[i];
+                o[0] = anaLex.getTokens()[i];
+                o[1] = anaLex.getLexemes()[i];
                 model.addRow(o);
             }
             anaSynt.Inicia();
